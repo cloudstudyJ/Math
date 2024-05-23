@@ -67,35 +67,13 @@ template <typename T> Complex<T>& Complex<T>::operator=(Complex<T>&& other) noex
 }
 
 template <typename T> template <typename U>
-Complex<T>& Complex<T>::operator+=(const Complex<U>& other) noexcept {
-    mReal      = static_cast<T>(mReal + other.real());
-    mImaginary = static_cast<T>(mImaginary + other.imaginary());
-
-    return *this;
-}
+Complex<T>& Complex<T>::operator+=(const Complex<U>& other) noexcept { return (*this = (*this + other)); }
 template <typename T> template <typename U>
-Complex<T>& Complex<T>::operator-=(const Complex<U>& other) noexcept {
-    mReal      = static_cast<T>(mReal - other.real());
-    mImaginary = static_cast<T>(mImaginary - other.imaginary());
-
-    return *this;
-}
+Complex<T>& Complex<T>::operator-=(const Complex<U>& other) noexcept { return (*this = (*this - other)); }
 template <typename T> template <typename U>
-Complex<T>& Complex<T>::operator*=(const Complex<U>& other) noexcept {
-    mReal      = static_cast<T>(mReal * other.real() - mImaginary * other.imaginary());
-    mImaginary = static_cast<T>(mReal * other.imaginary() + mImaginary * other.real());
-
-    return *this;
-}
+Complex<T>& Complex<T>::operator*=(const Complex<U>& other) noexcept { return (*this = (*this * other)); }
 template <typename T> template <typename U>
-Complex<T>& Complex<T>::operator/=(const Complex<U>& other) noexcept {
-    U denominator = Math::square(other.real()) + Math::square(other.imaginary());
-
-    mReal      = static_cast<T>((mReal * other.real() + mImaginary * other.imaginary()) / denominator);
-    mImaginary = static_cast<T>((mImaginary * other.real() - mReal * other.imaginary()) / denominator);
-
-    return *this;
-}
+Complex<T>& Complex<T>::operator/=(const Complex<U>& other) noexcept { return (*this = (*this / other)); }
 
 template <typename T> template <typename U>
 Complex<T> Complex<T>::operator+(const Complex<U>& other) const noexcept {
