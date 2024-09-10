@@ -25,7 +25,7 @@ class Math {
         inline static constexpr T square(const Vec<T, DIM>&) noexcept;
 
         template <typename T, typename = enableIF<isArithmetic<T>>>
-        inline static T sqrt(const T&) noexcept;
+        inline static float sqrtf(const T&) noexcept;
 
         // conversions
         template <typename T, typename = enableIF<isArithmetic<T>>>
@@ -87,7 +87,7 @@ inline constexpr T Math::square(const Vec<T, DIM>& vec) noexcept {
 }
 
 template <typename T, typename>
-inline T Math::sqrt(const T& val) noexcept {
+inline float Math::sqrtf(const T& val) noexcept {
     // https://www.codeproject.com/Articles/69941/Best-Square-Root-Method-Algorithm-Function-Precisi
 
     union {
