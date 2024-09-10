@@ -2,6 +2,8 @@
 
 #include "./base.hpp"
 
+// avg, sqrt, log, pow, factorial, sum
+
 class Math {
     // Numeric Constants
     public:
@@ -15,6 +17,8 @@ class Math {
     public:
         template <typename T, typename = enableIF<isArithmetic<T>>>
         inline static constexpr T abs(const T&) noexcept;
+
+        // TODO: support vector, matrix
         template <typename T, typename = enableIF<isArithmetic<T>>>
         inline static constexpr T square(const T&) noexcept;
 
@@ -23,13 +27,18 @@ class Math {
         template <typename T, typename = enableIF<isArithmetic<T>>>
         inline static constexpr double toDeg(const T&) noexcept;
 
+        // TODO: support array
         template <typename T, typename U, typename ...TYPES>
         inline static constexpr decltype(auto) min(T&&, U&&, TYPES&&...);
         template <typename T, typename U, typename ...TYPES>
         inline static constexpr decltype(auto) max(T&&, U&&, TYPES&&...);
 
         template <typename T, typename = enableIF<isArithmetic<T>>>
-        inline static constexpr bool isZero(const T&);
+        inline static constexpr bool isZero(const T&) noexcept;
+        template <typename T, unsigned int DIM>
+        inline static constexpr bool isZero(const Vec<T, DIM>&) noexcept;
+        template <typename T, unsigned int ROW, unsigned int COL>
+        inline static constexpr bool isZero(const Mat<T, ROW, COL>&) noexcept;
 
     private:
         // determination of the last recursive call's return value (= returns min value or max value)
@@ -43,7 +52,7 @@ inline constexpr T Math::abs(const T& val) noexcept {
         using iType = IF<isSame<T, float>, unsigned int, unsigned long long>;
 
         union converter {
-                T f;
+            T     f;
             iType i;
         } conv;
 
@@ -82,13 +91,32 @@ inline constexpr decltype(auto) Math::max(T&& a, U&& b, TYPES&&... args) {
 }
 
 template <typename T, typename>
-inline constexpr bool Math::isZero(const T& val) {
+inline constexpr bool Math::isZero(const T& val) noexcept {
     if constexpr (isFloat<T>)
         return (Math::abs(val) <= EPSILON<T>);
 
     return (val == 0);
 }
+template <typename T, unsigned int DIM>
+inline constexpr bool Math::isZero(const Vec<T, DIM>& vec) noexcept {
+    for (unsigned int i = 0; i < DIM; ++i) {
+        if (!isZero(vec[i]))
+            return false;
+    }
 
+    return true;
+}
+template <typename T, unsigned int ROW, unsigned int COL>
+inline constexpr bool Math::isZero(const Mat<T, ROW, COL>& mat) noexcept {
+    for (unsigned int row = 0; row < ROW; ++row) {
+        for (unsigned int col = 0; col < COL; ++col) {
+            if (!isZero(mat[row][col]))
+                return false;
+        }
+    }
+
+    return true;
+}
 
 template <typename T> inline constexpr decltype(auto) Math::min(T&& val) noexcept { return val; }
 template <typename T> inline constexpr decltype(auto) Math::max(T&& val) noexcept { return val; }
