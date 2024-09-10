@@ -2,7 +2,7 @@
 
 #include "./base.hpp"
 
-// avg, sqrt, log, pow, factorial, sum
+// avg, log, pow, factorial, sum
 
 class Math {
     // Numeric Constants
@@ -18,14 +18,20 @@ class Math {
         template <typename T, typename = enableIF<isArithmetic<T>>>
         inline static constexpr T abs(const T&) noexcept;
 
-        // TODO: support vector, matrix
+        // support matrix
         template <typename T, typename = enableIF<isArithmetic<T>>>
         inline static constexpr T square(const T&) noexcept;
+        template <typename T, unsigned int DIM>
+        inline static constexpr T square(const Vec<T, DIM>&) noexcept;
 
         template <typename T, typename = enableIF<isArithmetic<T>>>
-        inline static constexpr double toRad(const T&) noexcept;
+        inline static T sqrt(const T&) noexcept;
+
+        // conversions
         template <typename T, typename = enableIF<isArithmetic<T>>>
-        inline static constexpr double toDeg(const T&) noexcept;
+        inline static constexpr T toRad(const T&) noexcept;
+        template <typename T, typename = enableIF<isArithmetic<T>>>
+        inline static constexpr T toDeg(const T&) noexcept;
 
         // TODO: support array
         template <typename T, typename U, typename ...TYPES>
@@ -51,7 +57,7 @@ inline constexpr T Math::abs(const T& val) noexcept {
     if constexpr (isFloat<T>) {
         using iType = IF<isSame<T, float>, unsigned int, unsigned long long>;
 
-        union converter {
+        union {
             T     f;
             iType i;
         } conv;
@@ -67,13 +73,41 @@ inline constexpr T Math::abs(const T& val) noexcept {
     // unsigned integers
     return val;
 }
-template <typename T, typename>
-inline constexpr T Math::square(const T& val) noexcept { return val * val; }
 
 template <typename T, typename>
-inline constexpr double Math::toRad(const T& deg) noexcept { return (PI<double> / 180) * deg; }
+inline constexpr T Math::square(const T& val) noexcept { return val * val; }
+template <typename T, unsigned int DIM>
+inline constexpr T Math::square(const Vec<T, DIM>& vec) noexcept {
+    T sum{ };
+
+    for (unsigned int i = 0; i < DIM; ++i)
+        sum += vec[i];
+
+    return sum;
+}
+
 template <typename T, typename>
-inline constexpr double Math::toDeg(const T& rad) noexcept { return (180 / PI<double>) * rad; }
+inline T Math::sqrt(const T& val) noexcept {
+    // https://www.codeproject.com/Articles/69941/Best-Square-Root-Method-Algorithm-Function-Precisi
+
+    union {
+        float f;
+        int   i;
+    } conv;
+
+    conv.f = static_cast<float>(val);
+    conv.i = (1 << 29) + (conv.i >> 1) - (1 << 22);
+
+    conv.f = conv.f + static_cast<float>(val / conv.f);
+    conv.f = 0.25f * conv.f + static_cast<float>(val / conv.f);
+
+    return conv.f;
+}
+
+template <typename T, typename>
+inline constexpr T Math::toRad(const T& deg) noexcept { return static_cast<T>((PI<double> / 180) * deg); }
+template <typename T, typename>
+inline constexpr T Math::toDeg(const T& rad) noexcept { return static_cast<T>((180 / PI<double>) * rad); }
 
 template <typename T, typename U, typename... TYPES>
 inline constexpr decltype(auto) Math::min(T&& a, U&& b, TYPES&&... args) {
