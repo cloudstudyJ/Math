@@ -2,7 +2,8 @@
 
 #include "./base.hpp"
 
-// avg, log, pow, factorial, sum
+// log2, log, ln, pow, exp
+// support raw array type to min(), max()
 
 class Math {
     // Numeric Constants
@@ -18,11 +19,10 @@ class Math {
         template <typename T, typename = enableIF<isArithmetic<T>>>
         inline static constexpr T abs(const T&) noexcept;
 
-        // support matrix
         template <typename T, typename = enableIF<isArithmetic<T>>>
         inline static constexpr T square(const T&) noexcept;
-        template <typename T, unsigned int DIM>
-        inline static constexpr T square(const Vec<T, DIM>&) noexcept;
+        template <typename T, unsigned int ROW, unsigned int COL>
+        inline static constexpr Mat<T, ROW, COL> square(const Mat<T, ROW, COL>&) noexcept;
 
         template <typename T, typename = enableIF<isArithmetic<T>>>
         inline static float sqrtf(const T&) noexcept;
@@ -33,7 +33,7 @@ class Math {
         template <typename T, typename = enableIF<isArithmetic<T>>>
         inline static constexpr T toDeg(const T&) noexcept;
 
-        // TODO: support array
+        // support raw array
         template <typename T, typename U, typename ...TYPES>
         inline static constexpr decltype(auto) min(T&&, U&&, TYPES&&...);
         template <typename T, typename U, typename ...TYPES>
@@ -76,14 +76,11 @@ inline constexpr T Math::abs(const T& val) noexcept {
 
 template <typename T, typename>
 inline constexpr T Math::square(const T& val) noexcept { return val * val; }
-template <typename T, unsigned int DIM>
-inline constexpr T Math::square(const Vec<T, DIM>& vec) noexcept {
-    T sum{ };
+template <typename T, unsigned int ROW, unsigned int COL>
+inline constexpr Mat<T, ROW, COL> Math::square(const Mat<T, ROW, COL>& mat) noexcept {
+    static_assert(ROW == COL, "can not define matrix multiplication");
 
-    for (unsigned int i = 0; i < DIM; ++i)
-        sum += vec[i];
-
-    return sum;
+    return { mat * mat };
 }
 
 template <typename T, typename>
