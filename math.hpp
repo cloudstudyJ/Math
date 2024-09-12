@@ -2,14 +2,13 @@
 
 #include "./base.hpp"
 
-// log2, log, ln, pow, exp
-// support raw array type to min(), max()
+// log2, log, ln, pow
 
 class Math {
     // Numeric Constants
     public:
-        template <typename T>
-        inline static constexpr T PI = static_cast<T>(3.141'592'653'589'793);
+        template <typename T> inline static constexpr T PI = static_cast<T>(3.141'592'653'589'793);
+        template <typename T> inline static constexpr T E  = static_cast<T>(2.718'281'828'459'045);
 
         template <typename T, typename = enableIF<isFloat<T>>>
         inline static constexpr T EPSILON = (isSame<T, float>) ? 1.0E-06f : 1.0E-15;
@@ -34,7 +33,7 @@ class Math {
         inline static constexpr T toDeg(const T&) noexcept;
 
         // support raw array
-        template <typename T, typename U, typename ...TYPES>
+        template <typename T, typename U, typename... TYPES>
         inline static constexpr decltype(auto) min(T&&, U&&, TYPES&&...);
         template <typename T, typename U, typename ...TYPES>
         inline static constexpr decltype(auto) max(T&&, U&&, TYPES&&...);
@@ -92,9 +91,11 @@ inline float Math::sqrtf(const T& val) noexcept {
         int   i;
     } conv;
 
+    // get initial value
     conv.f = static_cast<float>(val);
     conv.i = (1 << 29) + (conv.i >> 1) - (1 << 22);
 
+    // approximation
     conv.f = conv.f + static_cast<float>(val / conv.f);
     conv.f = 0.25f * conv.f + static_cast<float>(val / conv.f);
 
