@@ -85,6 +85,9 @@ inline constexpr Mat<T, ROW, COL> Math::square(const Mat<T, ROW, COL>& mat) noex
 template <typename T, typename>
 inline float Math::sqrtf(const T& val) noexcept {
     // https://www.codeproject.com/Articles/69941/Best-Square-Root-Method-Algorithm-Function-Precisi
+    // precision: 2^-4
+
+    static constexpr int MAGIC = (1 << 29) - (1 << 22);
 
     union {
         float f;
@@ -93,11 +96,11 @@ inline float Math::sqrtf(const T& val) noexcept {
 
     // get initial value
     conv.f = static_cast<float>(val);
-    conv.i = (1 << 29) + (conv.i >> 1) - (1 << 22);
+    conv.i = MAGIC + (conv.i >> 1);
 
     // approximation
-    conv.f = conv.f + static_cast<float>(val / conv.f);
-    conv.f = 0.25f * conv.f + static_cast<float>(val / conv.f);
+    conv.f = conv.f + static_cast<float>(val / conv.f);             // first approximation
+    conv.f = 0.25f * conv.f + static_cast<float>(val / conv.f);     // second approximation
 
     return conv.f;
 }
