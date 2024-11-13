@@ -56,9 +56,9 @@ template <typename T, typename>
 inline constexpr T Math::square(const T& val) noexcept { return val * val; }
 
 template <typename T, typename>
-inline constexpr T Math::toRad(const T& deg) noexcept { return static_cast<T>((PI<T> / 180) * deg); }
+inline constexpr T Math::toRad(const T& deg) noexcept { return static_cast<T>((PI<double> / 180) * deg); }
 template <typename T, typename>
-inline constexpr T Math::toDeg(const T& rad) noexcept { return static_cast<T>((180 / PI<T>) * rad); }
+inline constexpr T Math::toDeg(const T& rad) noexcept { return static_cast<T>((180 / PI<double>) * rad); }
 
 template <typename T, typename>
 inline constexpr bool Math::isZero(const T& val) noexcept {
