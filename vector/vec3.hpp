@@ -273,7 +273,13 @@ inline Vec<T, 3> Vec<T, 3>::cross(const Vec<U, 3>& other) const noexcept {
 
 template <typename T> inline Vec<T, 3> Vec<T, 3>::normalize() const noexcept { return (*this / length()); }
 template <typename T> inline constexpr T Vec<T, 3>::length() const noexcept { return static_cast<T>(std::sqrt(lengthSquare())); }
-template <typename T> inline constexpr T Vec<T, 3>::lengthSquare() const noexcept { return (Math::square(x) + Math::square(y) + Math::square(z)); }
+template <typename T> inline constexpr T Vec<T, 3>::lengthSquare() const noexcept {
+    return (
+        Math::square(x) +
+        Math::square(y) +
+        Math::square(z)
+    );
+}
 
 template <typename T> template <typename U>
 inline constexpr T Vec<T, 3>::dot(const Vec<T, 3>& v1, const Vec<U, 3>& v2) noexcept { return v1.dot(v2); }
