@@ -63,13 +63,17 @@ class Vec<T, 3> {
         inline Vec<T, 3> cross(const Vec<U, 3>&) const noexcept;
 
         inline Vec<T, 3> normalize() const noexcept;
-        inline T length() const noexcept;
-        inline T lengthSquare() const noexcept;
+        inline constexpr T length() const noexcept;
+        inline constexpr T lengthSquare() const noexcept;
 
         template <typename U>
         static inline constexpr T dot(const Vec<T, 3>&, const Vec<U, 3>&) noexcept;
         template <typename U>
         static inline Vec<T, 3> cross(const Vec<T, 3>&, const Vec<U, 3>&) noexcept;
+
+        static inline Vec<T, 3> normalize(const Vec<T, 3>&) noexcept;
+        static inline constexpr T length(const Vec<T, 3>&) noexcept;
+        static inline constexpr T lengthSquare(const Vec<T, 3>&) noexcept;
 
     public:
         union { T x{ }, r; };
@@ -268,10 +272,14 @@ inline Vec<T, 3> Vec<T, 3>::cross(const Vec<U, 3>& other) const noexcept {
 }
 
 template <typename T> inline Vec<T, 3> Vec<T, 3>::normalize() const noexcept { return (*this / length()); }
-template <typename T> inline T Vec<T, 3>::length() const noexcept { return static_cast<T>(std::sqrt(lengthSquare())); }
-template <typename T> inline T Vec<T, 3>::lengthSquare() const noexcept { return (Math::square(x) + Math::square(y) + Math::square(z)); }
+template <typename T> inline constexpr T Vec<T, 3>::length() const noexcept { return static_cast<T>(std::sqrt(lengthSquare())); }
+template <typename T> inline constexpr T Vec<T, 3>::lengthSquare() const noexcept { return (Math::square(x) + Math::square(y) + Math::square(z)); }
 
 template <typename T> template <typename U>
 inline constexpr T Vec<T, 3>::dot(const Vec<T, 3>& v1, const Vec<U, 3>& v2) noexcept { return v1.dot(v2); }
 template <typename T> template <typename U>
 inline Vec<T, 3> Vec<T, 3>::cross(const Vec<T, 3>& v1, const Vec<U, 3>& v2) noexcept { return v1.cross(v2); }
+
+template <typename T> inline Vec<T, 3> Vec<T, 3>::normalize(const Vec<T, 3>& v) noexcept { return v.normalize(); }
+template <typename T> inline constexpr T Vec<T, 3>::length(const Vec<T, 3>& v) noexcept { return v.length(); }
+template <typename T> inline constexpr T Vec<T, 3>::lengthSquare(const Vec<T, 3>& v) noexcept { return v.lengthSquare(); }
