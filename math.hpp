@@ -68,9 +68,9 @@ inline constexpr bool Math::isZero(const T& val) noexcept {
     return (val == 0);
 }
 template <typename T, unsigned int DIM>
-inline constexpr bool Math::isZero(const Vec<T, DIM>& vec) noexcept {
+inline constexpr bool Math::isZero(const Vec<T, DIM>& v) noexcept {
     for (unsigned int i = 0; i < DIM; ++i) {
-        if (!isZero(vec[i]))
+        if (!isZero(v[i]))
             return false;
     }
 
