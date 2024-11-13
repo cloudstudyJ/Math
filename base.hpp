@@ -1,6 +1,6 @@
 #pragma once
 
-#include "./typeHandler.hpp"
+#include "typeHandler.hpp"
 
 template <typename T, unsigned int DIM, typename = enableIF<isArithmetic<T>>>
 class Vec;

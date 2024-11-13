@@ -1,8 +1,16 @@
 #pragma once
 
-#include "./base.hpp"
+#include "base.hpp"
 
 class Math {
+    Math() = delete;
+    Math(const Math&) = delete;
+    Math(Math&&) noexcept = delete;
+    ~Math() noexcept = delete;
+
+    Math& operator=(const Math&) = delete;
+    Math& operator=(Math&&) noexcept = delete;
+
     // Numeric Constants
     public:
         template <typename T> inline static constexpr T PI = static_cast<T>(3.141'592'653'589'793);
