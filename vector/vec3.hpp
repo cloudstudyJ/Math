@@ -1,9 +1,10 @@
 #pragma once
 
-#include "base.hpp"
-#include "typeHandler.hpp"
+#include "../base.hpp"
+#include "../math.hpp"
+#include "../typeHandler.hpp"
 
-#include <assert.h>     // assert()
+#include <cassert>      // assert()
 
 template <typename T>
 class Vec<T, 3> {
@@ -44,6 +45,16 @@ class Vec<T, 3> {
 
         T& operator[](const unsigned int& idx);
         const T& operator[](const unsigned int& idx) const;
+
+        template <typename U> Vec<T, 3>& operator+=(const Vec<U, 3>&) noexcept;
+        template <typename U> Vec<T, 3>& operator-=(const Vec<U, 3>&) noexcept;
+        template <typename U> Vec<T, 3>& operator*=(const U&) noexcept;
+        template <typename U> Vec<T, 3>& operator/=(const U&);
+
+        template <typename U> Vec<T, 3> operator+(const Vec<U, 3>&) const noexcept;
+        template <typename U> Vec<T, 3> operator-(const Vec<U, 3>&) const noexcept;
+        template <typename U> Vec<T, 3> operator*(const U&) const noexcept;
+        template <typename U> Vec<T, 3> operator/(const U&) const;
 
         template <typename U>
         inline constexpr T dot(const Vec<U, 3>&) const noexcept;
@@ -162,6 +173,76 @@ template <typename T> const T& Vec<T, 3>::operator[](const unsigned int& idx) co
         case 1: return y;
         case 2: return z;
     }
+}
+
+template <typename T> template <typename U>
+Vec<T, 3>& Vec<T, 3>::operator+=(const Vec<U, 3>& other) noexcept {
+    x = static_cast<T>(x + other.x);
+    y = static_cast<T>(y + other.y);
+    z = static_cast<T>(z + other.z);
+
+    return *this;
+}
+template <typename T> template <typename U>
+Vec<T, 3>& Vec<T, 3>::operator-=(const Vec<U, 3>& other) noexcept {
+    x = static_cast<T>(x - other.x);
+    y = static_cast<T>(y - other.y);
+    z = static_cast<T>(z - other.z);
+
+    return *this;
+}
+template <typename T> template <typename U>
+Vec<T, 3>& Vec<T, 3>::operator*=(const U& val) noexcept {
+    x = static_cast<T>(x * val);
+    y = static_cast<T>(y * val);
+    z = static_cast<T>(z * val);
+
+    return *this;
+}
+template <typename T> template <typename U>
+Vec<T, 3>& Vec<T, 3>::operator/=(const U& val) {
+    assert(!Math::isZero(val));
+
+    x = static_cast<T>(x / val);
+    y = static_cast<T>(y / val);
+    z = static_cast<T>(z / val);
+
+    return *this;
+}
+
+template <typename T> template <typename U>
+Vec<T, 3> Vec<T, 3>::operator+(const Vec<U, 3>& other) const noexcept {
+    return {
+        static_cast<T>(x + other.x),
+        static_cast<T>(y + other.y),
+        static_cast<T>(z + other.z)
+    };
+}
+template <typename T> template <typename U>
+Vec<T, 3> Vec<T, 3>::operator-(const Vec<U, 3>& other) const noexcept {
+    return {
+        static_cast<T>(x - other.x),
+        static_cast<T>(y - other.y),
+        static_cast<T>(z - other.z)
+    };
+}
+template <typename T> template <typename U>
+Vec<T, 3> Vec<T, 3>::operator*(const U& val) const noexcept {
+    return {
+        static_cast<T>(x * val),
+        static_cast<T>(y * val),
+        static_cast<T>(z * val)
+    };
+}
+template <typename T> template <typename U>
+Vec<T, 3> Vec<T, 3>::operator/(const U& val) const {
+    assert(!Math::isZero(val));
+
+    return {
+        static_cast<T>(x / val),
+        static_cast<T>(y / val),
+        static_cast<T>(z / val)
+    };
 }
 
 template <typename T> template <typename U>
