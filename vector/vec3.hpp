@@ -5,6 +5,7 @@
 #include "../typeHandler.hpp"
 
 #include <cassert>      // assert()
+#include <cmath>        // sqrt()
 
 template <typename T>
 class Vec<T, 3> {
@@ -51,15 +52,19 @@ class Vec<T, 3> {
         template <typename U> Vec<T, 3>& operator*=(const U&) noexcept;
         template <typename U> Vec<T, 3>& operator/=(const U&);
 
-        template <typename U> Vec<T, 3> operator+(const Vec<U, 3>&) const noexcept;
-        template <typename U> Vec<T, 3> operator-(const Vec<U, 3>&) const noexcept;
-        template <typename U> Vec<T, 3> operator*(const U&) const noexcept;
-        template <typename U> Vec<T, 3> operator/(const U&) const;
+        template <typename U> inline Vec<T, 3> operator+(const Vec<U, 3>&) const noexcept;
+        template <typename U> inline Vec<T, 3> operator-(const Vec<U, 3>&) const noexcept;
+        template <typename U> inline Vec<T, 3> operator*(const U&) const noexcept;
+        template <typename U> inline Vec<T, 3> operator/(const U&) const;
 
         template <typename U>
         inline constexpr T dot(const Vec<U, 3>&) const noexcept;
         template <typename U>
         inline Vec<T, 3> cross(const Vec<U, 3>&) const noexcept;
+
+        inline Vec<T, 3> normalize() const noexcept;
+        inline T length() const noexcept;
+        inline T lengthSquare() const noexcept;
 
         template <typename U>
         static inline constexpr T dot(const Vec<T, 3>&, const Vec<U, 3>&) noexcept;
@@ -211,7 +216,7 @@ Vec<T, 3>& Vec<T, 3>::operator/=(const U& val) {
 }
 
 template <typename T> template <typename U>
-Vec<T, 3> Vec<T, 3>::operator+(const Vec<U, 3>& other) const noexcept {
+inline Vec<T, 3> Vec<T, 3>::operator+(const Vec<U, 3>& other) const noexcept {
     return {
         static_cast<T>(x + other.x),
         static_cast<T>(y + other.y),
@@ -219,7 +224,7 @@ Vec<T, 3> Vec<T, 3>::operator+(const Vec<U, 3>& other) const noexcept {
     };
 }
 template <typename T> template <typename U>
-Vec<T, 3> Vec<T, 3>::operator-(const Vec<U, 3>& other) const noexcept {
+inline Vec<T, 3> Vec<T, 3>::operator-(const Vec<U, 3>& other) const noexcept {
     return {
         static_cast<T>(x - other.x),
         static_cast<T>(y - other.y),
@@ -227,7 +232,7 @@ Vec<T, 3> Vec<T, 3>::operator-(const Vec<U, 3>& other) const noexcept {
     };
 }
 template <typename T> template <typename U>
-Vec<T, 3> Vec<T, 3>::operator*(const U& val) const noexcept {
+inline Vec<T, 3> Vec<T, 3>::operator*(const U& val) const noexcept {
     return {
         static_cast<T>(x * val),
         static_cast<T>(y * val),
@@ -235,7 +240,7 @@ Vec<T, 3> Vec<T, 3>::operator*(const U& val) const noexcept {
     };
 }
 template <typename T> template <typename U>
-Vec<T, 3> Vec<T, 3>::operator/(const U& val) const {
+inline Vec<T, 3> Vec<T, 3>::operator/(const U& val) const {
     assert(!Math::isZero(val));
 
     return {
@@ -261,6 +266,10 @@ inline Vec<T, 3> Vec<T, 3>::cross(const Vec<U, 3>& other) const noexcept {
         static_cast<T>(x * other.y - y * other.x)
     };
 }
+
+template <typename T> inline Vec<T, 3> Vec<T, 3>::normalize() const noexcept { return (*this / length()); }
+template <typename T> inline T Vec<T, 3>::length() const noexcept { return static_cast<T>(std::sqrt(lengthSquare())); }
+template <typename T> inline T Vec<T, 3>::lengthSquare() const noexcept { return (Math::square(x) + Math::square(y) + Math::square(z)); }
 
 template <typename T> template <typename U>
 inline constexpr T Vec<T, 3>::dot(const Vec<T, 3>& v1, const Vec<U, 3>& v2) noexcept { return v1.dot(v2); }
