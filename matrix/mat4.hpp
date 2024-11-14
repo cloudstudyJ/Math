@@ -2,6 +2,7 @@
 
 #include "../base.hpp"
 #include "../typeHandler.hpp"
+#include "../vector/vec3.hpp"
 #include "../vector/vec4.hpp"
 
 #include <cassert>      // assert()
@@ -43,8 +44,13 @@ class Mat<T, 4, 4> {
         static inline Mat<T, 4, 4> transpose(const Mat<T, 4, 4>&) noexcept;
         static inline Mat<T, 4, 4> identity() noexcept;
 
-        static inline Mat<T, 4, 4> translate(const Vec4<T>&) noexcept;
-        static inline Mat<T, 4, 4> scale(const Vec4<T>&) noexcept;
+        static inline Mat<T, 4, 4> translate(const Vec3<T>&) noexcept;
+        static inline Mat<T, 4, 4> scale(const Vec3<T>&) noexcept;
+
+        template <typename U1, typename U2, typename U3>
+        static inline Mat<T, 4, 4> translate(const U1&, const U2&, const U3&) noexcept;
+        template <typename U>
+        static inline Mat<T, 4, 4> scale(const U&) noexcept;
 
     public:
         Vec4<T> mROW[4];
@@ -132,12 +138,12 @@ template <typename T> const Vec4<T>& Mat<T, 4, 4>::operator[](const unsigned int
 }
 
 template <typename T> inline constexpr T Mat<T, 4, 4>::trace() const noexcept {
-    T sum{ };
-
-    for (unsigned int i = 0; i < 4; ++i)
-        sum += mROW[i][i];
-
-    return sum;
+    return (
+        mROW[0].x +
+        mROW[1].y +
+        mROW[2].z +
+        mROW[3].w
+    );
 }
 template <typename T> inline Mat<T, 4, 4> Mat<T, 4, 4>::transpose() const noexcept {
     Mat<T, 4, 4> m;
@@ -166,22 +172,27 @@ template <typename T> inline Mat<T, 4, 4> Mat<T, 4, 4>::identity() noexcept {
     return i;
 }
 
-template <typename T> inline Mat<T, 4, 4> Mat<T, 4, 4>::translate(const Vec4<T>& v) noexcept {
+template <typename T> inline Mat<T, 4, 4> Mat<T, 4, 4>::translate(const Vec3<T>& v) noexcept {
     Mat<T, 4, 4> t = Mat<T, 4, 4>::identity();
 
-    t[0][3] = v.x;
-    t[1][3] = v.y;
-    t[2][3] = v.z;
+    t[0].w = v.x;
+    t[1].w = v.y;
+    t[2].w = v.z;
 
     return t;
 }
-template <typename T> inline Mat<T, 4, 4> Mat<T, 4, 4>::scale(const Vec4<T>& v) noexcept {
+template <typename T> inline Mat<T, 4, 4> Mat<T, 4, 4>::scale(const Vec3<T>& v) noexcept {
     Mat<T, 4, 4> s;
 
-    v[0][0] = v.x;
-    v[1][1] = v.y;
-    v[2][2] = v.z;
-    v[3][3] = static_cast<T>(1);
+    v[0].x = v.x;
+    v[1].y = v.y;
+    v[2].z = v.z;
+    v[3].w = static_cast<T>(1);
 
     return s;
 }
+
+template <typename T> template <typename U1, typename U2, typename U3>
+inline Mat<T, 4, 4> Mat<T, 4, 4>::translate(const U1& x, const U2& y, const U3& z) noexcept { return Mat<T, 4, 4>::translate({x, y, z}); }
+template <typename T> template <typename U>
+inline Mat<T, 4, 4> Mat<T, 4, 4>::scale(const U& val) noexcept { return Mat<T, 4, 4>::scale({val, val, val}); }
