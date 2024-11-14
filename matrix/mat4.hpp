@@ -4,6 +4,8 @@
 #include "../typeHandler.hpp"
 #include "../vector/vec4.hpp"
 
+#include <cassert>      // assert()
+
 template <typename T>
 class Mat<T, 4, 4> {
     public:
@@ -34,7 +36,15 @@ class Mat<T, 4, 4> {
         Vec4<T>& operator[](const unsigned int& idx);
         const Vec4<T>& operator[](const unsigned int& idx) const;
 
+        inline constexpr T trace() const noexcept;
+        inline Mat<T, 4, 4> transpose() const noexcept;
+
+        static inline constexpr T trace(const Mat<T, 4, 4>&) noexcept;
+        static inline Mat<T, 4, 4> transpose(const Mat<T, 4, 4>&) noexcept;
         static inline Mat<T, 4, 4> identity() noexcept;
+
+        static inline Mat<T, 4, 4> translate(const Vec4<T>&) noexcept;
+        static inline Mat<T, 4, 4> scale(const Vec4<T>&) noexcept;
 
     public:
         Vec4<T> mROW[4];
@@ -121,6 +131,27 @@ template <typename T> const Vec4<T>& Mat<T, 4, 4>::operator[](const unsigned int
     return mROW[idx];
 }
 
+template <typename T> inline constexpr T Mat<T, 4, 4>::trace() const noexcept {
+    T sum{ };
+
+    for (unsigned int i = 0; i < 4; ++i)
+        sum += mROW[i][i];
+
+    return sum;
+}
+template <typename T> inline Mat<T, 4, 4> Mat<T, 4, 4>::transpose() const noexcept {
+    Mat<T, 4, 4> m;
+
+    for (unsigned int row = 0; row < 4; ++row) {
+        for (unsigned int col = 0; col < 4; ++col)
+            m[row][col] = mROW[col][row];
+    }
+
+    return m;
+}
+
+template <typename T> inline constexpr T Mat<T, 4, 4>::trace(const Mat<T, 4, 4>& m) noexcept { return m.trace(); }
+template <typename T> inline Mat<T, 4, 4> Mat<T, 4, 4>::transpose(const Mat<T, 4, 4>& m) noexcept { return m.transpose(); }
 template <typename T> inline Mat<T, 4, 4> Mat<T, 4, 4>::identity() noexcept {
     static constexpr T zero = static_cast<T>(0);
     static constexpr T one  = static_cast<T>(1);
@@ -133,4 +164,24 @@ template <typename T> inline Mat<T, 4, 4> Mat<T, 4, 4>::identity() noexcept {
     );
 
     return i;
+}
+
+template <typename T> inline Mat<T, 4, 4> Mat<T, 4, 4>::translate(const Vec4<T>& v) noexcept {
+    Mat<T, 4, 4> t = Mat<T, 4, 4>::identity();
+
+    t[0][3] = v.x;
+    t[1][3] = v.y;
+    t[2][3] = v.z;
+
+    return t;
+}
+template <typename T> inline Mat<T, 4, 4> Mat<T, 4, 4>::scale(const Vec4<T>& v) noexcept {
+    Mat<T, 4, 4> s;
+
+    v[0][0] = v.x;
+    v[1][1] = v.y;
+    v[2][2] = v.z;
+    v[3][3] = static_cast<T>(1);
+
+    return s;
 }
