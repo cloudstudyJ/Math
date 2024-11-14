@@ -37,6 +37,18 @@ class Mat<T, 4, 4> {
         Vec4<T>& operator[](const unsigned int& idx);
         const Vec4<T>& operator[](const unsigned int& idx) const;
 
+        template <typename U> Mat<T, 4, 4>& operator+=(const Mat<U, 4, 4>&) noexcept;
+        template <typename U> Mat<T, 4, 4>& operator-=(const Mat<U, 4, 4>&) noexcept;
+        template <typename U> Mat<T, 4, 4>& operator*=(const Mat<U, 4, 4>&) noexcept;
+        template <typename U> Mat<T, 4, 4>& operator*=(const U&) noexcept;
+        template <typename U> Mat<T, 4, 4>& operator/=(const U&);
+
+        template <typename U> inline Mat<T, 4, 4> operator+(const Mat<U, 4, 4>&) const noexcept;
+        template <typename U> inline Mat<T, 4, 4> operator-(const Mat<U, 4, 4>&) const noexcept;
+        template <typename U> inline Mat<T, 4, 4> operator*(const Mat<U, 4, 4>&) const noexcept;
+        template <typename U> inline Mat<T, 4, 4> operator*(const U&) const noexcept;
+        template <typename U> inline Mat<T, 4, 4> operator/(const U&) const;
+
         inline constexpr T trace() const noexcept;
         inline Mat<T, 4, 4> transpose() const noexcept;
 
@@ -135,6 +147,99 @@ template <typename T> const Vec4<T>& Mat<T, 4, 4>::operator[](const unsigned int
     assert(idx < 4);
 
     return mROW[idx];
+}
+
+template <typename T> template <typename U>
+Mat<T, 4, 4>& Mat<T, 4, 4>::operator+=(const Mat<U, 4, 4>& other) noexcept {
+    mROW[0] += other.mROW[0];
+    mROW[1] += other.mROW[1];
+    mROW[2] += other.mROW[2];
+    mROW[3] += other.mROW[3];
+
+    return *this;
+}
+template <typename T> template <typename U>
+Mat<T, 4, 4>& Mat<T, 4, 4>::operator-=(const Mat<U, 4, 4>& other) noexcept {
+    mROW[0] -= other.mROW[0];
+    mROW[1] -= other.mROW[1];
+    mROW[2] -= other.mROW[2];
+    mROW[3] -= other.mROW[3];
+
+    return *this;
+}
+template <typename T> template <typename U>
+Mat<T, 4, 4>& Mat<T, 4, 4>::operator*=(const Mat<U, 4, 4>& other) noexcept { return (*this = ((*this) * other)); }
+template <typename T> template <typename U>
+Mat<T, 4, 4>& Mat<T, 4, 4>::operator*=(const U& val) noexcept {
+    mROW[0] *= val;
+    mROW[1] *= val;
+    mROW[2] *= val;
+    mROW[3] *= val;
+
+    return *this;
+}
+template <typename T> template <typename U>
+Mat<T, 4, 4>& Mat<T, 4, 4>::operator/=(const U& val) {
+    mROW[0] /= val;
+    mROW[1] /= val;
+    mROW[2] /= val;
+    mROW[3] /= val;
+
+    return *this;
+}
+
+template <typename T> template <typename U>
+inline Mat<T, 4, 4> Mat<T, 4, 4>::operator+(const Mat<U, 4, 4>& other) const noexcept {
+    return {
+        mROW[0] + other.mROW[0],
+        mROW[1] + other.mROW[1],
+        mROW[2] + other.mROW[2],
+        mROW[3] + other.mROW[3]
+    };
+}
+template <typename T> template <typename U>
+inline Mat<T, 4, 4> Mat<T, 4, 4>::operator-(const Mat<U, 4, 4>& other) const noexcept {
+    return {
+        mROW[0] - other.mROW[0],
+        mROW[1] - other.mROW[1],
+        mROW[2] - other.mROW[2],
+        mROW[3] - other.mROW[3]
+    };
+}
+template <typename T> template <typename U>
+inline Mat<T, 4, 4> Mat<T, 4, 4>::operator*(const Mat<U, 4, 4>& other) const noexcept {
+    Mat<T, 4, 4> result;
+
+    T sum{ };
+    for (unsigned int row = 0; row < 4; ++row) {
+        for (unsigned int col = 0; col < 4; ++col) {
+            for (unsigned int k = 0; k < 4; ++k)
+                sum += static_cast<T>(mROW[row][k] * other.mROW[k][col]);
+
+            result[row][col] = sum;
+            sum = { };
+        }
+    }
+
+    return result;
+}
+template <typename T> template <typename U>
+inline Mat<T, 4, 4> Mat<T, 4, 4>::operator*(const U& val) const noexcept {
+    return {
+        mROW[0] * val,
+        mROW[1] * val,
+        mROW[2] * val,
+        mROW[3] * val
+    };
+}
+template <typename T> template <typename U>
+inline Mat<T, 4, 4> Mat<T, 4, 4>::operator/(const U& val) const {
+    return {
+        mROW[0] / val,
+        mROW[1] / val,
+        mROW[2] / val,
+        mROW[3] / val
+    };
 }
 
 template <typename T> inline constexpr T Mat<T, 4, 4>::trace() const noexcept {
