@@ -65,6 +65,8 @@ class Mat<T, 4, 4> {
         template <typename U> static inline Mat<T, 4, 4> rotateZ(const U&) noexcept;
 
         static inline Mat<T, 4, 4> view(const Vec3<T>&, const Vec3<T>&, const Vec3<T>&) noexcept;
+        template <typename U1, typename U2, typename U3, typename U4>
+        static inline Mat<T, 4, 4> projection(const U1&, const U2&, const U3&, const U4&) noexcept;
 
         template <typename U1, typename U2, typename U3>
         static inline Mat<T, 4, 4> translate(const U1&, const U2&, const U3&) noexcept;
@@ -364,6 +366,21 @@ template <typename T> inline Mat<T, 4, 4> Mat<T, 4, 4>::view(const Vec3<T>& pos,
         Vec4<T>{ -front.x, -front.y, -front.z,  front.dot(pos) },
         Vec4<T>{   zero  ,   zero  ,   zero  ,       one       }
     };
+}
+template <typename T> template <typename U1, typename U2, typename U3, typename U4>
+inline Mat<T, 4, 4> Mat<T, 4, 4>::projection(const U1& near, const U2& far, const U3& fovY, const U4& aspect) noexcept {
+    Mat<T, 4, 4> p;
+
+    const T focalLength = static_cast<T>(1 / std::tan(fovY / 2.0));
+    const T nfDIFF = static_cast<T>(near - far);
+
+    p.mROW[0].x = static_cast<T>(focalLength / aspect);
+    p.mROW[1].y = focalLength;
+    p.mROW[2].z = static_cast<T>((near + far) / nfDIFF);
+    p.mROW[2].w = static_cast<T>((2 * near * far) / nfDIFF);
+    p.mROW[3].z = static_cast<T>(-1);
+
+    return p;
 }
 
 template <typename T> template <typename U1, typename U2, typename U3>
