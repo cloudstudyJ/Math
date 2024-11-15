@@ -1,11 +1,13 @@
 #pragma once
 
 #include "../base.hpp"
+#include "../math.hpp"
 #include "../typeHandler.hpp"
 #include "../vector/vec3.hpp"
 #include "../vector/vec4.hpp"
 
 #include <cassert>      // assert()
+#include <cmath>        // sin(), cos()
 
 template <typename T>
 class Mat<T, 4, 4> {
@@ -58,6 +60,11 @@ class Mat<T, 4, 4> {
 
         static inline Mat<T, 4, 4> translate(const Vec3<T>&) noexcept;
         static inline Mat<T, 4, 4> scale(const Vec3<T>&) noexcept;
+        template <typename U> static inline Mat<T, 4, 4> rotateX(const U&) noexcept;
+        template <typename U> static inline Mat<T, 4, 4> rotateY(const U&) noexcept;
+        template <typename U> static inline Mat<T, 4, 4> rotateZ(const U&) noexcept;
+
+        static inline Mat<T, 4, 4> view(const Vec3<T>&, const Vec3<T>&, const Vec3<T>&) noexcept;
 
         template <typename U1, typename U2, typename U3>
         static inline Mat<T, 4, 4> translate(const U1&, const U2&, const U3&) noexcept;
@@ -191,19 +198,19 @@ Mat<T, 4, 4>& Mat<T, 4, 4>::operator/=(const U& val) {
 template <typename T> template <typename U>
 inline Mat<T, 4, 4> Mat<T, 4, 4>::operator+(const Mat<U, 4, 4>& other) const noexcept {
     return {
-        mROW[0] + other.mROW[0],
-        mROW[1] + other.mROW[1],
-        mROW[2] + other.mROW[2],
-        mROW[3] + other.mROW[3]
+        (mROW[0] + other.mROW[0]),
+        (mROW[1] + other.mROW[1]),
+        (mROW[2] + other.mROW[2]),
+        (mROW[3] + other.mROW[3])
     };
 }
 template <typename T> template <typename U>
 inline Mat<T, 4, 4> Mat<T, 4, 4>::operator-(const Mat<U, 4, 4>& other) const noexcept {
     return {
-        mROW[0] - other.mROW[0],
-        mROW[1] - other.mROW[1],
-        mROW[2] - other.mROW[2],
-        mROW[3] - other.mROW[3]
+        (mROW[0] - other.mROW[0]),
+        (mROW[1] - other.mROW[1]),
+        (mROW[2] - other.mROW[2]),
+        (mROW[3] - other.mROW[3])
     };
 }
 template <typename T> template <typename U>
@@ -226,19 +233,19 @@ inline Mat<T, 4, 4> Mat<T, 4, 4>::operator*(const Mat<U, 4, 4>& other) const noe
 template <typename T> template <typename U>
 inline Mat<T, 4, 4> Mat<T, 4, 4>::operator*(const U& val) const noexcept {
     return {
-        mROW[0] * val,
-        mROW[1] * val,
-        mROW[2] * val,
-        mROW[3] * val
+        (mROW[0] * val),
+        (mROW[1] * val),
+        (mROW[2] * val),
+        (mROW[3] * val)
     };
 }
 template <typename T> template <typename U>
 inline Mat<T, 4, 4> Mat<T, 4, 4>::operator/(const U& val) const {
     return {
-        mROW[0] / val,
-        mROW[1] / val,
-        mROW[2] / val,
-        mROW[3] / val
+        (mROW[0] / val),
+        (mROW[1] / val),
+        (mROW[2] / val),
+        (mROW[3] / val)
     };
 }
 
@@ -278,11 +285,18 @@ template <typename T> inline Mat<T, 4, 4> Mat<T, 4, 4>::identity() noexcept {
 }
 
 template <typename T> inline Mat<T, 4, 4> Mat<T, 4, 4>::translate(const Vec3<T>& v) noexcept {
-    Mat<T, 4, 4> t = Mat<T, 4, 4>::identity();
+    Mat<T, 4, 4> t;
 
+    t[0].x = static_cast<T>(1);
     t[0].w = v.x;
+
+    t[1].y = static_cast<T>(1);
     t[1].w = v.y;
+
+    t[2].z = static_cast<T>(1);
     t[2].w = v.z;
+
+    t[3].w = static_cast<T>(1);
 
     return t;
 }
@@ -295,6 +309,61 @@ template <typename T> inline Mat<T, 4, 4> Mat<T, 4, 4>::scale(const Vec3<T>& v) 
     v[3].w = static_cast<T>(1);
 
     return s;
+}
+template <typename T> template <typename U> inline Mat<T, 4, 4> Mat<T, 4, 4>::rotateX(const U& val) noexcept {
+    Mat<T, 4, 4> Rx;
+
+    const T s = static_cast<T>(std::sin(Math::toRad(val)));
+    const T c = static_cast<T>(std::cos(Math::toRad(val)));
+
+    Rx.mROW[0].x = static_cast<T>(1);
+    Rx.mROW[1](static_cast<T>(0), c, -s);
+    Rx.mROW[2](static_cast<T>(0), s,  c);
+    Rx.mROW[3].w = static_cast<T>(1);
+
+    return Rx;
+}
+template <typename T> template <typename U> inline Mat<T, 4, 4> Mat<T, 4, 4>::rotateY(const U& val) noexcept {
+    Mat<T, 4, 4> Ry;
+
+    const T s = static_cast<T>(std::sin(Math::toRad(val)));
+    const T c = static_cast<T>(std::cos(Math::toRad(val)));
+
+    Ry.mROW[0]( c, static_cast<T>(0), s);
+    Ry.mROW[1].y = static_cast<T>(1);
+    Ry.mROW[2](-s, static_cast<T>(0), c);
+    Ry.mROW[3].w = static_cast<T>(1);
+
+    return Ry;
+}
+template <typename T> template <typename U> inline Mat<T, 4, 4> Mat<T, 4, 4>::rotateZ(const U& val) noexcept {
+    Mat<T, 4, 4> Rz;
+
+    const T s = static_cast<T>(std::sin(Math::toRad(val)));
+    const T c = static_cast<T>(std::cos(Math::toRad(val)));
+
+    Rz.mROW[0](c, -s);
+    Rz.mROW[1](s,  c);
+    Rz.mROW[2].z = static_cast<T>(1);
+    Rz.mROW[3].w = static_cast<T>(1);
+
+    return Rz;
+}
+
+template <typename T> inline Mat<T, 4, 4> Mat<T, 4, 4>::view(const Vec3<T>& pos, const Vec3<T>& look, const Vec3<T>& yAxis) noexcept {
+    static constexpr T zero = static_cast<T>(0);
+    static constexpr T one  = static_cast<T>(1);
+
+    Vec3<T> front = (look - pos).normalize();
+    Vec3<T> side  = front.cross(yAxis).normalize();
+    Vec3<T> up    = side.cross(front);
+
+    return {
+        Vec4<T>{   side.x,   side.y,   side.z, - side.dot(pos) },
+        Vec4<T>{     up.x,     up.y,     up.z, -   up.dot(pos) },
+        Vec4<T>{ -front.x, -front.y, -front.z,  front.dot(pos) },
+        Vec4<T>{   zero  ,   zero  ,   zero  ,       one       }
+    };
 }
 
 template <typename T> template <typename U1, typename U2, typename U3>
