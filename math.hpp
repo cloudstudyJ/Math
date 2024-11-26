@@ -19,8 +19,8 @@ class Math {
         template <typename T, typename = enableIF<isFloat<T>>>
         inline static constexpr T EPSILON = (isSame<T, float>) ? 1.0E-06f : 1.0E-15;
 
-    // Base Functions
     public:
+        // Basic Functions
         template <typename T, typename = enableIF<isArithmetic<T>>>
         inline static constexpr T abs(const T&) noexcept;
         template <typename T, typename = enableIF<isArithmetic<T>>>
@@ -32,10 +32,15 @@ class Math {
         template <typename T, typename = enableIF<isArithmetic<T>>>
         inline static constexpr T toDeg(const T&) noexcept;
 
+        // Booleans
         template <typename T, typename = enableIF<isArithmetic<T>>>
         inline static constexpr bool isZero(const T&) noexcept;
         template <typename T, unsigned int DIM>
         inline static constexpr bool isZero(const Vec<T, DIM>&) noexcept;
+
+        // Interpolations
+        template <typename T1, typename T2, unsigned int DIM>
+        inline static constexpr Vec<float, DIM> lerpf(const Vec<T1, DIM>&, const Vec<T2, DIM>&, const float&) noexcept;
 };
 
 template <typename T, typename>
@@ -84,3 +89,5 @@ inline constexpr bool Math::isZero(const Vec<T, DIM>& v) noexcept {
 
     return true;
 }
+template <typename T1, typename T2, unsigned int DIM>
+inline constexpr Vec<float, DIM> Math::lerpf(const Vec<T1, DIM>& v1, const Vec<T2, DIM>& v2, const float& t) noexcept { return { (v1 * (1.0f - t)) + (v2 * t) }; }

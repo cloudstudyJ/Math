@@ -15,10 +15,8 @@ class Vec<T, 4> {
         Vec(Vec<T, 4>&&) noexcept;
         ~Vec() noexcept;
 
-        template <typename U>
-        Vec(const Vec<U, 4>&) noexcept;
-        template <typename U>
-        Vec(Vec<U, 4>&&) noexcept;
+        template <typename U> Vec(const Vec<U, 4>&) noexcept;
+        template <typename U> Vec(Vec<U, 4>&&) noexcept;
 
         template <typename U>
         Vec(const U&) noexcept;
@@ -32,10 +30,8 @@ class Vec<T, 4> {
         Vec<T, 4>& operator=(const Vec<T, 4>&) noexcept;
         Vec<T, 4>& operator=(Vec<T, 4>&&) noexcept;
 
-        template <typename U>
-        Vec<T, 4>& operator=(const Vec<U, 4>&) noexcept;
-        template <typename U>
-        Vec<T, 4>& operator=(Vec<U, 4>&&) noexcept;
+        template <typename U> Vec<T, 4>& operator=(const Vec<U, 4>&) noexcept;
+        template <typename U> Vec<T, 4>& operator=(Vec<U, 4>&&) noexcept;
 
         template <typename U>
         Vec<T, 4>& operator()(const Vec<U, 4>&) noexcept;
@@ -61,15 +57,13 @@ class Vec<T, 4> {
         template <typename U> inline Vec<T, 4> operator*(const U&) const noexcept;
         template <typename U> inline Vec<T, 4> operator/(const U&) const;
 
-        template <typename U>
-        inline constexpr T dot(const Vec<U, 4>&) const noexcept;
+        template <typename U> inline constexpr T dot(const Vec<U, 4>&) const noexcept;
 
         inline Vec<T, 4> normalize() const noexcept;
         inline constexpr T length() const noexcept;
         inline constexpr T lengthSquare() const noexcept;
 
-        template <typename U>
-        static inline constexpr T dot(const Vec<T, 4>&, const Vec<U, 4>&) noexcept;
+        template <typename U> static inline constexpr T dot(const Vec<T, 4>&, const Vec<U, 4>&) noexcept;
 
         static inline Vec<T, 4> normalize(const Vec<T, 4>&) noexcept;
         static inline constexpr T length(const Vec<T, 4>&) noexcept;

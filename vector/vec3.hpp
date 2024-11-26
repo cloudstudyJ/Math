@@ -15,10 +15,8 @@ class Vec<T, 3> {
         Vec(Vec<T, 3>&&) noexcept;
         ~Vec() noexcept;
 
-        template <typename U>
-        Vec(const Vec<U, 3>&) noexcept;
-        template <typename U>
-        Vec(Vec<U, 3>&&) noexcept;
+        template <typename U> Vec(const Vec<U, 3>&) noexcept;
+        template <typename U> Vec(Vec<U, 3>&&) noexcept;
 
         template <typename U>
         Vec(const U&) noexcept;
@@ -30,10 +28,8 @@ class Vec<T, 3> {
         Vec<T, 3>& operator=(const Vec<T, 3>&) noexcept;
         Vec<T, 3>& operator=(Vec<T, 3>&&) noexcept;
 
-        template <typename U>
-        Vec<T, 3>& operator=(const Vec<U, 3>&) noexcept;
-        template <typename U>
-        Vec<T, 3>& operator=(Vec<U, 3>&&) noexcept;
+        template <typename U> Vec<T, 3>& operator=(const Vec<U, 3>&) noexcept;
+        template <typename U> Vec<T, 3>& operator=(Vec<U, 3>&&) noexcept;
 
         template <typename U>
         Vec<T, 3>& operator()(const Vec<U, 3>&) noexcept;
@@ -57,19 +53,15 @@ class Vec<T, 3> {
         template <typename U> inline Vec<T, 3> operator*(const U&) const noexcept;
         template <typename U> inline Vec<T, 3> operator/(const U&) const;
 
-        template <typename U>
-        inline constexpr T dot(const Vec<U, 3>&) const noexcept;
-        template <typename U>
-        inline Vec<T, 3> cross(const Vec<U, 3>&) const noexcept;
+        template <typename U> inline constexpr T dot(const Vec<U, 3>&) const noexcept;
+        template <typename U> inline Vec<T, 3> cross(const Vec<U, 3>&) const noexcept;
 
         inline Vec<T, 3> normalize() const noexcept;
         inline constexpr T length() const noexcept;
         inline constexpr T lengthSquare() const noexcept;
 
-        template <typename U>
-        static inline constexpr T dot(const Vec<T, 3>&, const Vec<U, 3>&) noexcept;
-        template <typename U>
-        static inline Vec<T, 3> cross(const Vec<T, 3>&, const Vec<U, 3>&) noexcept;
+        template <typename U> static inline constexpr T dot(const Vec<T, 3>&, const Vec<U, 3>&) noexcept;
+        template <typename U> static inline Vec<T, 3> cross(const Vec<T, 3>&, const Vec<U, 3>&) noexcept;
 
         static inline Vec<T, 3> normalize(const Vec<T, 3>&) noexcept;
         static inline constexpr T length(const Vec<T, 3>&) noexcept;
