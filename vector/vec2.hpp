@@ -41,11 +41,15 @@ class Vec<T, 2> {
 
         template <typename U> Vec<T, 2>& operator+=(const Vec<U, 2>&) noexcept;
         template <typename U> Vec<T, 2>& operator-=(const Vec<U, 2>&) noexcept;
+        template <typename U> Vec<T, 2>& operator+=(const U&) noexcept;
+        template <typename U> Vec<T, 2>& operator-=(const U&) noexcept;
         template <typename U> Vec<T, 2>& operator*=(const U&) noexcept;
         template <typename U> Vec<T, 2>& operator/=(const U&);
 
         template <typename U> inline Vec<T, 2> operator+(const Vec<U, 2>&) const noexcept;
         template <typename U> inline Vec<T, 2> operator-(const Vec<U, 2>&) const noexcept;
+        template <typename U> inline Vec<T, 2> operator+(const U&) const noexcept;
+        template <typename U> inline Vec<T, 2> operator-(const U&) const noexcept;
         template <typename U> inline Vec<T, 2> operator*(const U&) const noexcept;
         template <typename U> inline Vec<T, 2> operator/(const U&) const;
 
@@ -168,6 +172,20 @@ Vec<T, 2>& Vec<T, 2>::operator-=(const Vec<U, 2>& other) noexcept {
     return *this;
 }
 template <typename T> template <typename U>
+Vec<T, 2>& Vec<T, 2>::operator+=(const U& val) noexcept {
+    x = static_cast<T>(x + val);
+    y = static_cast<T>(y + val);
+
+    return *this;
+}
+template <typename T> template <typename U>
+Vec<T, 2>& Vec<T, 2>::operator-=(const U& val) noexcept {
+    x = static_cast<T>(x - val);
+    y = static_cast<T>(y - val);
+
+    return *this;
+}
+template <typename T> template <typename U>
 Vec<T, 2>& Vec<T, 2>::operator*=(const U& val) noexcept {
     x = static_cast<T>(x * val);
     y = static_cast<T>(y * val);
@@ -196,6 +214,20 @@ inline Vec<T, 2> Vec<T, 2>::operator-(const Vec<U, 2>& other) const noexcept {
     return {
         static_cast<T>(x - other.x),
         static_cast<T>(y - other.y)
+    };
+}
+template <typename T> template <typename U>
+inline Vec<T, 2> Vec<T, 2>::operator+(const U& val) const noexcept {
+    return {
+        static_cast<T>(x + val),
+        static_cast<T>(y + val)
+    };
+}
+template <typename T> template <typename U>
+inline Vec<T, 2> Vec<T, 2>::operator-(const U& val) const noexcept {
+    return {
+        static_cast<T>(x - val),
+        static_cast<T>(y - val)
     };
 }
 template <typename T> template <typename U>
