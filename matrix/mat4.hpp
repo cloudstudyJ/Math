@@ -42,12 +42,16 @@ class Mat<T, 4, 4> {
         template <typename U> Mat<T, 4, 4>& operator+=(const Mat<U, 4, 4>&) noexcept;
         template <typename U> Mat<T, 4, 4>& operator-=(const Mat<U, 4, 4>&) noexcept;
         template <typename U> Mat<T, 4, 4>& operator*=(const Mat<U, 4, 4>&) noexcept;
+        template <typename U> Mat<T, 4, 4>& operator+=(const U&) noexcept;
+        template <typename U> Mat<T, 4, 4>& operator-=(const U&) noexcept;
         template <typename U> Mat<T, 4, 4>& operator*=(const U&) noexcept;
         template <typename U> Mat<T, 4, 4>& operator/=(const U&);
 
         template <typename U> inline Mat<T, 4, 4> operator+(const Mat<U, 4, 4>&) const noexcept;
         template <typename U> inline Mat<T, 4, 4> operator-(const Mat<U, 4, 4>&) const noexcept;
         template <typename U> inline Mat<T, 4, 4> operator*(const Mat<U, 4, 4>&) const noexcept;
+        template <typename U> inline Mat<T, 4, 4> operator+(const U&) const noexcept;
+        template <typename U> inline Mat<T, 4, 4> operator-(const U&) const noexcept;
         template <typename U> inline Mat<T, 4, 4> operator*(const U&) const noexcept;
         template <typename U> inline Mat<T, 4, 4> operator/(const U&) const;
 
@@ -179,6 +183,24 @@ Mat<T, 4, 4>& Mat<T, 4, 4>::operator-=(const Mat<U, 4, 4>& other) noexcept {
 template <typename T> template <typename U>
 Mat<T, 4, 4>& Mat<T, 4, 4>::operator*=(const Mat<U, 4, 4>& other) noexcept { return (*this = ((*this) * other)); }
 template <typename T> template <typename U>
+Mat<T, 4, 4>& Mat<T, 4, 4>::operator+=(const U& val) noexcept {
+    mROW[0] += val;
+    mROW[1] += val;
+    mROW[2] += val;
+    mROW[3] += val;
+
+    return *this;
+}
+template <typename T> template <typename U>
+Mat<T, 4, 4>& Mat<T, 4, 4>::operator-=(const U& val) noexcept {
+    mROW[0] -= val;
+    mROW[1] -= val;
+    mROW[2] -= val;
+    mROW[3] -= val;
+
+    return *this;
+}
+template <typename T> template <typename U>
 Mat<T, 4, 4>& Mat<T, 4, 4>::operator*=(const U& val) noexcept {
     mROW[0] *= val;
     mROW[1] *= val;
@@ -231,6 +253,24 @@ inline Mat<T, 4, 4> Mat<T, 4, 4>::operator*(const Mat<U, 4, 4>& other) const noe
     }
 
     return result;
+}
+template <typename T> template <typename U>
+inline Mat<T, 4, 4> Mat<T, 4, 4>::operator+(const U& val) const noexcept {
+    return {
+        (mROW[0] + val),
+        (mROW[1] + val),
+        (mROW[2] + val),
+        (mROW[3] + val)
+    };
+}
+template <typename T> template <typename U>
+inline Mat<T, 4, 4> Mat<T, 4, 4>::operator-(const U& val) const noexcept {
+    return {
+        (mROW[0] - val),
+        (mROW[1] - val),
+        (mROW[2] - val),
+        (mROW[3] - val)
+    };
 }
 template <typename T> template <typename U>
 inline Mat<T, 4, 4> Mat<T, 4, 4>::operator*(const U& val) const noexcept {
